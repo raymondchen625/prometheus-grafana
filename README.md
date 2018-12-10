@@ -18,6 +18,7 @@ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admi
 helm init --service-account tiller --upgrade
 ```
 Helm is only required to install the charts. Once the installation is done, it(and its tiller) can be uninstalled.
+
 2. Configure and install Prometheus
 * Configure NFS at the bottom of prometheus/values.yaml
 Point them to a valid NFS service IP and path
@@ -26,12 +27,14 @@ Point them to a valid NFS service IP and path
 cd helm_charts
 helm install prometheus --name prometheus
 ```
+
 3. Configure and install Grafana
 ```
 helm install grafana --name grafana
 ```
 Grafana will run on a NodePort, the port number (An integer of 30000+) can be found by running: kubectl get svc | grep grafana
 The password for 'admin' user can be printed with: kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
 4. Set up Grafana Dashboard
 * Access with browswer to http://{master_ip}:{GrafanaNodePort}, login with admin user and the password found above.
 * In grafana, define a datasource with the prometheus- node port
@@ -41,6 +44,7 @@ URL: http://prometheus-server.default.svc.cluster.local
 * Create a dashboard with graphs.
 We can import from https://grafana.com/dashboards
 Browse and find the dashbaord you like, get its ID, like 6417 for "Kubernetes Cluster (Prometheus)". In Grafana web GUI, select Import dashboard, fill the ID and click 'Load", Fill the form to specify name, datasource etc and click "Import" to create the dashboard
+
 5. Set up alerting in Grafana
 * Choose and sign up a alerting service, like PagerDuty, which has 12-day free trial. 
 * Create a service in PagerDuty, add email, phone number, Android/iOS app etc. and get its' integration key.
